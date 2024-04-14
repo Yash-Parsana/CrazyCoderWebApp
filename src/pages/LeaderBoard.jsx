@@ -167,7 +167,7 @@ function LeaderBoard() {
         let isUserExistOnPlatform = checkHandleExist.length && checkHandleExist[0].rating != null;
         let alreadyIncluded = false;
         if (handlesFb.friendshandles?.[platform]) {
-            alreadyIncluded = (handlesFb.friendshandles[platform].filter((ele)=> ele.toLowerCase() == handle.toLowerCase())).length > 0
+            alreadyIncluded = ((handlesFb.friendshandles[platform].filter((ele)=> ele.toLowerCase() == handle.toLowerCase())).length > 0) || (handlesFb?.myhandles?.[platform])
         }
         return [isUserExistOnPlatform, alreadyIncluded];
     };
