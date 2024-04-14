@@ -1,0 +1,21 @@
+@keyframes fullView {
+    100% {
+        width: 100%;
+    }
+}
+.animate {
+    --shimmer-color: #e6e6e6;
+    --shimmer-color2: #e6e6e6;
+    animation: shimmer 3s;
+    animation-iteration-count: infinite;
+    background: linear-gradient(to right, var(--shimmer-color) 5%, var(--shimmer-color2) 25%, var(--shimmer-color) 35%);
+    background-size: 1000px 100%;
+}
+@keyframes shimmer {
+    from {
+        background-position: -1000px 0;
+    }
+    to {
+        background-position: 1000px 0;
+    }
+}

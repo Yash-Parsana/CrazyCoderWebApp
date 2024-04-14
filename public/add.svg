@@ -1,0 +1,11 @@
+<svg id="SvgjsSvg1017" width="288" height="288"
+    xmlns="http://www.w3.org/2000/svg" version="1.1"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:svgjs="http://svgjs.com/svgjs">
+    <defs id="SvgjsDefs1018"></defs>
+    <g id="SvgjsG1019">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="288" height="288">
+            <path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Zm9.41-13v2H17v8.41H15V17H6.59V15H15V6.59h2V15Z" data-name="34 add, plus, button" fill="#2563eb" class="color000 svgShape"></path>
+        </svg>
+    </g>
+</svg>
