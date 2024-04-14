@@ -115,17 +115,17 @@ function Home() {
                         {
                             text: element?.name,
                             width: 'w-1/2',
-                            ta: 'text-left text-md lg:text-lg',
+                            ta: 'text-left text-sm lg:text-lg',
                         },
                         {
                             text: startTime,
                             width: 'w-1/4',
-                            ta: 'text-center text-sm lg:text-lg',
+                            ta: 'text-center text-xs lg:text-lg',
                         },
                         {
                             text: endTime,
                             width: 'w-1/4',
-                            ta: 'text-center text-sm lg:text-lg',
+                            ta: 'text-center text-xs lg:text-lg',
                         },
                     ],
                 };
@@ -175,7 +175,7 @@ function Home() {
             {!loading && (
                 <div className='flex flex-col min-h-96 lg:min-h-screen'>
                     {contestData.map((obj, index) => (
-                        <Board key={index} {...obj} />
+                        <Board key={index} {...obj} px={'lg:px-4'} lipx='px-2 lg:px-3' />
                     ))}
                 </div>
             )}
