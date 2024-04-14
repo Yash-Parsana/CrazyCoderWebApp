@@ -154,7 +154,7 @@ function Profile() {
         let isUserExistOnPlatform = checkHandleExist.length && checkHandleExist[0].rating != null;
         let alreadyIncluded = false;
         if (handles?.[platform]) {
-            alreadyIncluded = handles?.[platform] == handle;
+            alreadyIncluded = handles?.[platform]?.toLowerCase() == handle.toLowerCase();
         }
         return [isUserExistOnPlatform, alreadyIncluded];
     };
@@ -162,19 +162,20 @@ function Profile() {
     const handleAddHandlepopupBtn = async (data) => {
         try {
             const platform = getPlatformSlug(data.platform);
-            const isAddable = await isAddableAcc(platform, data.handle);
+            const handle = data.handle.trim();
+            const isAddable = await isAddableAcc(platform, handle);
             if (isAddable[0]) {
                 if (isAddable[1]) {
                     setAddfriendPopUp(false);
                     return;
                 }
                 const newHandles = { ...handles };
-                newHandles[platform] = data.handle;
+                newHandles[platform] = handle;
                 await updateDocField('handles', userData.uid, { myhandles: newHandles });
                 setHandles(newHandles);
                 setAddfriendPopUp(false);
             } else {
-                throw new Error(`Handle ${data.handle} does not exist on ${data.platform}`);
+                throw new Error(`Handle ${handle} does not exist on ${platform}`);
             }
         } catch (err) {
             console.log(err);

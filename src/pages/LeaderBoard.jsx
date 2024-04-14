@@ -167,7 +167,7 @@ function LeaderBoard() {
         let isUserExistOnPlatform = checkHandleExist.length && checkHandleExist[0].rating != null;
         let alreadyIncluded = false;
         if (handlesFb.friendshandles?.[platform]) {
-            alreadyIncluded = handlesFb.friendshandles[platform].includes(handle);
+            alreadyIncluded = (handlesFb.friendshandles[platform].filter((ele)=> ele.toLowerCase() == handle.toLowerCase())).length > 0
         }
         return [isUserExistOnPlatform, alreadyIncluded];
     };
@@ -175,20 +175,22 @@ function LeaderBoard() {
     const handleAddHandlepopupBtn = async (data) => {
         try {
             const platform = getPlatformSlug(data.platform);
-            const isAddable = await isAddableAcc(platform, data.handle);
+            const handle = data?.handle?.trim();
+            const isAddable = await isAddableAcc(platform, handle);
+            console.log(isAddable);
             if (isAddable[0]) {
                 if (isAddable[1]) {
                     setAddfriendPopUp(false);
                     return;
                 }
-                const platformArray = [data.handle];
+                const platformArray = [handle];
                 if (handlesFb.friendshandles?.[platform]) platformArray.push(...handlesFb.friendshandles[platform]);
                 const updatedPlatformFb = setPlatformHandles(handlesFb, platform, platformArray);
                 await setDocumentInFirestore('handles', userData.uid, updatedPlatformFb);
                 setHandlesFb(updatedPlatformFb);
                 setAddfriendPopUp(false);
             } else {
-                throw new Error(`Handle ${data.handle} does not exist on ${data.platform}`);
+                throw new Error(`Handle ${handle} does not exist on ${platform}`);
             }
         } catch (err) {
             console.log(err);
@@ -208,7 +210,7 @@ function LeaderBoard() {
             }
             else {
                 obj.friendshandles[activePlatform] = obj.friendshandles?.[activePlatform].filter((ele) => 
-                    ele.toLowerCase() != handle.toLowerCase()
+                    ele.trim().toLowerCase() != handle.trim().toLowerCase()
                 )
             }
             setHandlesFb(obj);
