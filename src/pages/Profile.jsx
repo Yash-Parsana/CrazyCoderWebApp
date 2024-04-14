@@ -224,10 +224,29 @@ function Profile() {
                             <div className='flex-1 py-10 ml-8'>
                                 <p className='text-white text-3xl'>👑 {user.username}</p>
                                 <div className='flex my-3'>
-                                    {handles?.at_coder && <img className='h-9 pr-4' src='./atcoder.png' />}
-                                    {handles?.code_chef && <img className='h-9 pr-4' src='./codechef.svg' />}
-                                    {handles?.codeforces && <img className='h-9 pr-4' src='./codeforces.svg' />}
-                                    {handles?.leet_code && <img className='h-9 pr-4' src='./leetcode.svg' />}
+                                    {handles?.at_coder && (
+                                        <a target='_blank' href={`https://atcoder.jp/users/${handles.at_coder}`}>
+                                            <img className='h-9 pr-4 cursor-pointer' src='./atcoder.png' />
+                                        </a>
+                                    )}
+                                    {handles?.code_chef && (
+                                        <a target='_blank' href={`https://www.codechef.com/users/${handles.code_chef}`}>
+                                            <img className='h-9 pr-4 cursor-pointer' src='./codechef.svg' />
+                                        </a>
+                                    )}
+                                    {handles?.codeforces && (
+                                        <a
+                                            target='_blank'
+                                            href={`https://codeforces.com/profile/${handles.codeforces}`}
+                                        >
+                                            <img className='h-9 pr-4 cursor-pointer' src='./codeforces.svg' />
+                                        </a>
+                                    )}
+                                    {handles?.leet_code && (
+                                        <a target='_blank' href={`https://leetcode.com/${handles.leet_code}`}>
+                                            <img className='h-9 pr-4 cursor-pointer' src='./leetcode.svg' />
+                                        </a>
+                                    )}
                                 </div>
                             </div>
                         </div>
