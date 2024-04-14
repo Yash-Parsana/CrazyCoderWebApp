@@ -38,25 +38,25 @@ function Home() {
 
     const boardHeadObj = {
         bgc: 'bg-blue',
-        px: 'px-6 lg:px-10',
+        px: 'px-2 lg:px-10',
         lipx: '',
-        py: 'py-5 lg:py-5',
+        py: 'py-2 lg:py-5',
         fz: 'text-lg lg:text-xl',
         row: [
             {
                 text: 'Contest Name',
                 width: 'w-1/2',
-                ta: 'text-left',
+                ta: 'text-left text-md lg:text-xl',
             },
             {
                 text: 'Start Time',
                 width: 'w-1/4',
-                ta: 'text-center',
+                ta: 'text-center text-md lg:text-xl',
             },
             {
                 text: 'End Time',
                 width: 'w-1/4',
-                ta: ' text-center',
+                ta: ' text-center text-md lg:text-xl',
             },
         ],
     };
@@ -115,17 +115,17 @@ function Home() {
                         {
                             text: element?.name,
                             width: 'w-1/2',
-                            ta: 'text-left',
+                            ta: 'text-left text-md lg:text-lg',
                         },
                         {
                             text: startTime,
                             width: 'w-1/4',
-                            ta: 'text-center',
+                            ta: 'text-center text-sm lg:text-lg',
                         },
                         {
                             text: endTime,
                             width: 'w-1/4',
-                            ta: 'text-center',
+                            ta: 'text-center text-sm lg:text-lg',
                         },
                     ],
                 };
