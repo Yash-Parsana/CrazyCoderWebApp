@@ -44,8 +44,10 @@ function Profile() {
         async function loadUser() {
             try {
                 setlLoading(true);
-                const userF = await getDocumentFromFireStore('users', userData.uid);
-                const handles = await getDocumentFromFireStore('handles', userData.uid);
+                const [userF, handles] = await Promise.all([
+                    getDocumentFromFireStore('users', userData.uid),
+                    getDocumentFromFireStore('handles', userData.uid),
+                ]);
                 const obj = {
                     username: userData.username,
                     uid: userData.uid,
