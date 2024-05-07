@@ -86,7 +86,8 @@ The different technologies used to build CrazyCoder :
 ## Contribution Guidelines
 
 We welcome contributions from the open-source community to make CrazyCoder even better. To contribute, please follow these steps:
-
+ 
+ :pushpin: <b>Star the Repo:</b> Start by giving our repository a star to show your support.
  :pushpin: <b>Find or Create an Issue:</b> Browse the existing issues or create a new one if you have a suggestion or find a bug.
 
  :pushpin: <b>Fork the Repo:</b> Fork the CrazyCoder repository to your GitHub account (Click the <a href="https://github.com/Yash-Parsana/CrazyCoderWebApp/fork"><img src="https://i.imgur.com/G4z1kEe.png" height="21" width="21"></a> button in the top right of this page).
