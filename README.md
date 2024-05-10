@@ -6,7 +6,7 @@
 
 # CrazyCoder
 
-Competitive programming (CP) a large growing community is very well known for algorithms, data structures and Mathematics, and is a must have skill for any computer science student or top tech companies job aspirant.<br>
+Competitive programming (CP) is a large growing community that is very well known for algorithms, data structures, and Mathematics, and is a must-have skill for any computer science student or top tech companies job aspirant.<br>
 <br>
 CrazyCoder is born out of our need to have a single place to view all the coding contests happening across many platforms. The app automatically updates all the coding contests and hackathons. You will never miss any contest.
 CrazyCoder aims to promote and help grow the competitive programming community worldwide.<br>
@@ -36,7 +36,7 @@ CrazyCoder offers a range of features to enhance your competitive programming ex
 
 5. **Chat With Friends**: Connect with fellow programmers, discuss coding problems, and share your progress.
 
-6. **Progress Tracking**: Keep track of your own progress and see how you are improving over time.
+6. **Progress Tracking**: Keep track of your progress and see how you are improving over time.
 
 7. **Profile Page**: Visit your profile page directly from the app to manage your personal information and preferences.
 
