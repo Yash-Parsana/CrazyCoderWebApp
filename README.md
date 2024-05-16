@@ -118,6 +118,19 @@ We welcome contributions from the open-source community to make CrazyCoder even 
 :pushpin: <b>Review and Merge:</b> Wait for your PR review and approval from the maintainers.
 Once approved, it will be merged into the main repository.
 
+:pushpin: <b>Firbase config for testing:</b>
+```
+const firebaseConfig = {
+  apiKey: "AIzaSyDyVVjSoKcpiPqJR1zdL8EZeYpkHqowHVQ",
+  authDomain: "crazycoder-not-prod.firebaseapp.com",
+  projectId: "crazycoder-not-prod",
+  storageBucket: "crazycoder-not-prod.appspot.com",
+  messagingSenderId: "662605987262",
+  appId: "1:662605987262:web:faaf730060c54ccc190def",
+  measurementId: "G-2WVEE3XNEV"
+};
+```
+
 <br>
 We appreciate your contributions and thank you for helping us make CrazyCoder a valuable resource for the competitive programming community!!
 
