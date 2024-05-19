@@ -50,9 +50,9 @@ function Form({ title, fields, type = 'login', btnClick, signInWithGoogleFun }) 
 
     return (
         <>
-            <div className='relative min-h-screen flex items-center justify-center bg-bgcolor px-4 sm:px-6 lg:px-8 bg-gray-500 bg-no-repeat bg-cover'>
+            <div className='relative min-h-screen flex items-center justify-center bg-bgcolor px-4 sm:px-6 lg:px-8 bg-gray-500 bg-no-repeat bg-cover z-5 '>
                 <div className='absolute bg-black opacity-60 inset-0 z-0'></div>
-                <div className='max-w-md w-full p-8 bg-white rounded-xl z-10'>
+                <div className='max-w-md w-full p-8 bg-white rounded-xl z-0'>
                     {error && <p className='text-red mt-8 text-center'>{error}</p>}
                     <div className='text-center'>
                         <h2 className='mt-6 text-3xl font-bold text-gray-900'>{title}</h2>
