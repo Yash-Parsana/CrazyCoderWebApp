@@ -50,7 +50,7 @@ function Header() {
                     <Link to='/'>
                         <img className='w-12 lg:w-14' src='/logo.png'></img>
                     </Link>
-                    <p className='mx-3 font-bold text-2xl lg:text-3xl text-white'>Crazy Coder</p>
+                    <Link to="/" className='mx-3 font-bold text-2xl lg:text-3xl text-white'>Crazy Coder</Link>
                 </div>
                 <div className={`hidden lg:flex lg:grow lg:items-center lg:justify-end`}>
                     {navItems.map((item) =>
