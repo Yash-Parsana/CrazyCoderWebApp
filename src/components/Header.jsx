@@ -44,7 +44,7 @@ function Header() {
     
 
     return (
-        <header className='flex flex-col'>
+        <header className='flex flex-col font-[Helvetica]'>
             <nav className='w-full flex items-center px-5 py-5 lg:px-10 lg:py-5'>
                 <div className='mr-4 flex grow-0 items-center justify-between'>
                     <Link to='/'>
@@ -59,7 +59,7 @@ function Header() {
                                 key={item.name}
                                 to={item.url}
                                 className={({ isActive }) =>
-                                    ` cursor-pointer text-xl font-medium f mx-4 ${
+                                    ` cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out text-xl font-medium f mx-4 ${
                                         isActive ? 'text-blue' : 'text-white'
                                     } border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                                 }
