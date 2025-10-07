@@ -151,6 +151,7 @@ function LeaderBoard() {
                 }
             } else {
                 //handles is null
+                setLoading(false);
             }
         }
         prapreRankList();

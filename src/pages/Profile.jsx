@@ -53,9 +53,10 @@ function Profile() {
                     uid: userData.uid,
                     imgurl: userF.pic,
                 };
-                setHandles(handles.myhandles);
+                setHandles(handles?.myhandles);
                 setUser(obj);
                 setlLoading(false);
+                setrLoading(false);
             } catch (err) {
                 console.log(err);
             }
@@ -274,12 +275,12 @@ function Profile() {
                         ) : (
                             <div className='min-h-96 lg:min-h-screen flex flex-col py-24 px-8'>
                                 <h1 className='text-white text-2xl text-center h-fit'>
-                                    Please add your and your friend's platform handles.
+                                    Please add your platform handles.
                                 </h1>
-                                <h2 className='text-white text-lg text-center h-fit p-2'>
+                                {/* <h2 className='text-white text-lg text-center h-fit p-2'>
                                     You can add your handle in profile section and your friend's handle at top left
                                     corner.
-                                </h2>
+                                </h2> */}
                             </div>
                         ))}
 
