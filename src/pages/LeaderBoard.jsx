@@ -152,6 +152,7 @@ function LeaderBoard() {
             } else {
                 //handles is null
             }
+            setLoading(false);
         }
         prapreRankList();
     }, [JSON.stringify(handlesFb), activePlatform]);
