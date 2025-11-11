@@ -4,7 +4,6 @@
  <img src="https://github.com/Yash-Parsana/CrazyCoderApp/assets/77839976/d9197945-46b2-4fe1-893b-a6bfe8f3477b" height= 500 width = 500 />
 </p>
 
-
 # CrazyCoder
 
 Competitive programming (CP) a large growing community is very well known for algorithms, data structures and Mathematics, and is a must have skill for any computer science student or top tech companies job aspirant.<br>
@@ -87,7 +86,9 @@ The different technologies used to build CrazyCoder :
 ## Contribution Guidelines
 
 We welcome contributions from the open-source community to make CrazyCoder even better. To contribute, please follow these steps:
-
+ 
+ :pushpin: <b>Star the Repo:</b> Start by giving our repository a star to show your support.
+ 
  :pushpin: <b>Find or Create an Issue:</b> Browse the existing issues or create a new one if you have a suggestion or find a bug.
 
  :pushpin: <b>Fork the Repo:</b> Fork the CrazyCoder repository to your GitHub account (Click the <a href="https://github.com/Yash-Parsana/CrazyCoderWebApp/fork"><img src="https://i.imgur.com/G4z1kEe.png" height="21" width="21"></a> button in the top right of this page).
@@ -117,6 +118,14 @@ We welcome contributions from the open-source community to make CrazyCoder even 
 :pushpin: <b>Review and Merge:</b> Wait for your PR review and approval from the maintainers.
 Once approved, it will be merged into the main repository.
 
+:pushpin: <b>How to run the project:</b>
+```
+Rename test.env file to .env file.
+Run: npm run install
+Run: npm run dev
+Visit http://localhost:5173/
+```
+
 <br>
 We appreciate your contributions and thank you for helping us make CrazyCoder a valuable resource for the competitive programming community!!
 
@@ -135,3 +144,5 @@ Please note that the above is an enhanced version of the readme file. Feel free 
 <h1 align=center>Happy Coding!👨‍💻 </h1>
 <br>
 <p align="right"><a href="#top"><img src="https://img.shields.io/badge/Move%20to%20top-Blue?style=plastic" alt="Back To Top"></a></p>
+# decentralised-fiver
+# crazy-coder-web-app
