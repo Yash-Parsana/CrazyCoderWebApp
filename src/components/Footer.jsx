@@ -1,6 +1,8 @@
 import React from 'react';
 
 function Footer() {
+    const today = new Date();
+    const year = today.getFullYear();
     return (
         <div className=' bg-gray-900 mt-8 mx-6 lg:mx-10 lg:pt-10 border-t border-light-grey'>
             <div className='max-w-2xl mx-auto text-white py-10'>
@@ -21,7 +23,7 @@ function Footer() {
                     </div>
                 </div>
                 <div className=' mt-16 lg:mt-28 flex flex-col md:flex-row md:justify-between items-center text-sm text-gray-400'>
-                    <p className='order-2 md:order-1 mt-8 md:mt-0'> &copy; Crazy Coder, 2024. </p>
+                    <p className='order-2 md:order-1 mt-8 md:mt-0'> &copy; Crazy Coder, {year} . </p>
                     <div className='order-1 md:order-2 flex'>
                         <a
                             href='https://github.com/Yash-Parsana'
