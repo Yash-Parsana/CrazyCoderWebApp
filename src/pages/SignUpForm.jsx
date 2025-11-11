@@ -30,7 +30,7 @@ function SignUpForm() {
         },
         {
             label: 'Confirm Password',
-            type: 'text',
+            type: 'password',
             placeholder: '',
             field: 'cpassword',
         },
