@@ -151,12 +151,17 @@ function Home() {
     };
 
     useEffect(() => {
+        let active = true;
         async function callService() {
             const data = await fetchContestData(activePlatform);
+            if (!active) return;
             dataConvertor(data);
             setLoading(false);
         }
         callService();
+        return () => {
+            active = false;
+        };
     }, [activePlatform]);
 
     return (

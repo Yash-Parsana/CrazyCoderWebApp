@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import Loader from './Loader';
 
 function Form({ title, fields, type = 'login', btnClick, signInWithGoogleFun }) {
-    const { register, handleSubmit,errors } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 

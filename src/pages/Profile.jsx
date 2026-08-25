@@ -59,6 +59,8 @@ function Profile() {
                 setrLoading(false);
             } catch (err) {
                 console.log(err);
+                setlLoading(false);
+                setrLoading(false);
             }
         }
         loadUser();
@@ -93,21 +95,29 @@ function Profile() {
     };
 
     useEffect(() => {
+        let active = true;
         async function loadHandles() {
             try {
                 if (!handles) return;
                 setrLoading(true);
                 setMyPlatformData([]);
                 const rankingData = await fetchFullRankingData(activePlatform, handles?.[activePlatform]);
-                
+                if (!active) return;
+
                 if (rankingData) {
                     const transformedData = trnasformData(activePlatform == 'codeforces' ? rankingData[0] : rankingData);
                     setMyPlatformData(transformedData);
                 }
                 setrLoading(false);
-            } catch (err) {}
+            } catch (err) {
+                console.log(err);
+                if (active) setrLoading(false);
+            }
         }
         loadHandles();
+        return () => {
+            active = false;
+        };
     }, [JSON.stringify(handles), activePlatform]);
 
     const upLoadImage = async (e) => {

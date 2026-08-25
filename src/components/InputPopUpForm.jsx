@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import Loader from './Loader';
 
 function InputPopUpForm({ title, element, optionManu = false, btnClick, closeBtn = null,showCloseBtn = false }) {
-    const { register, handleSubmit, errors } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 

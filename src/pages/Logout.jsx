@@ -13,6 +13,7 @@ function Logout() {
         navigate('/');
     },[])
 
+    return null;
 }
 
 export default Logout

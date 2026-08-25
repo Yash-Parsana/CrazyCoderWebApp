@@ -1,12 +1,15 @@
 import React from 'react';
 import Form from '../components/Form';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import {
     signUpWithEmailAndPass,
     setDocumentInFirestore,
     isUsernameExist,
     signInWithGoogle,
 } from '../services/firebaseService';
+import { login } from '../store/authSlice';
+import { generateToken } from '../services/jwtService';
 
 function SignUpForm() {
     const fields = [
@@ -36,6 +39,7 @@ function SignUpForm() {
         },
     ];
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const handleForm = async (data) => {
         try {
             const { email, password, username } = data;
@@ -66,7 +70,7 @@ function SignUpForm() {
         if (isUsernameAvailable) {
             const user = await signInWithGoogle();
             const obj = {
-                email,
+                email: user.email,
                 status: false,
                 username: username,
                 chatfriends: [],
@@ -87,7 +91,9 @@ function SignUpForm() {
             const jwtToken = await generateToken(obj);
             localStorage.setItem('jwtToken', jwtToken);
             navigate('/');
-        } catch (err) {}
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     return (

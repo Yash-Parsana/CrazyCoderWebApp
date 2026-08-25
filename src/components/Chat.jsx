@@ -13,7 +13,6 @@ import {
     chatListener,
 } from '../services/firebaseService';
 import ChatShimmer from './ChatShimmer';
-import { formatTimestamp } from '../services/timeConvertors';
 
 function Chat() {
     const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmonpqrstuvwxyz0123456789', 20);
@@ -46,11 +45,11 @@ function Chat() {
     };
 
     useEffect(() => {
-        if (chatUser) {
-            const senderRoom = userData.uid + chatUser.uid;
-            chatListener(senderRoom, loadChat);
-        }
-    }, [JSON.stringify(chatUser)]);
+        if (!chatUser) return;
+        const senderRoom = userData.uid + chatUser.uid;
+        const unsubscribe = chatListener(senderRoom, loadChat);
+        return () => unsubscribe();
+    }, [chatUser?.uid]);
 
     const closePopUp = () => {
         setAddFriendPopUp(false);
@@ -93,9 +92,10 @@ function Chat() {
                 if (!isPresent(friendList, user)) {
                     const newFriendUidList = friendList.map((ele) => ele.uid);
                     newFriendUidList.push(user.uid);
-                    user.chatfriends?.push(userData.uid);
+                    const theirFriendUidList = user.chatfriends ?? [];
+                    theirFriendUidList.push(userData.uid);
                     await updateDocField('users', userData.uid, { chatfriends: newFriendUidList });
-                    await updateDocField('users', user.uid, { chatfriends: user.chatfriends });
+                    await updateDocField('users', user.uid, { chatfriends: theirFriendUidList });
                     user.chatfriends = null;
                     let newFriendList = [...friendList];
                     newFriendList.push(user);
