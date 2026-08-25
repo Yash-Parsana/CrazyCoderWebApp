@@ -4,6 +4,8 @@ import {
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
     signInWithPopup,
+    onAuthStateChanged,
+    signOut,
 } from 'firebase/auth';
 import {
     getFirestore,
@@ -170,6 +172,18 @@ const uploadImage =async (file,filename) => {
     }
 }
 
+const onAuthChanged = (callback) => {
+    return onAuthStateChanged(auth, callback);
+};
+
+const signOutUser = async () => {
+    try {
+        await signOut(auth);
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     try {
@@ -199,4 +213,6 @@ export {
     sendMessage,
     chatListener,
     uploadImage,
+    onAuthChanged,
+    signOutUser,
 };

@@ -1,0 +1,44 @@
+rules_version = '2';
+
+// Draft rules based on the data model this app's client code uses today
+// (see src/services/firebaseService.js). NOT deployed by anything in this
+// repo — review, adjust, and deploy yourself via the Firebase console or:
+//   firebase deploy --only firestore:rules
+// This is the one place real access control has to live: nothing in the
+// client bundle can be trusted as a security boundary.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // users/{uid}: { email, status, username, chatfriends, pic }
+    match /users/{uid} {
+      // Read is open on purpose: SignUpForm checks username availability
+      // (isUsernameExist) BEFORE the visitor is signed in, and Chat looks
+      // up friends by username too. If you don't need email readable by
+      // everyone, consider moving username lookups to a separate
+      // "usernames" collection that only maps username -> uid.
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // handles/{uid}: { myhandles: {...}, friendshandles: {...} }
+    match /handles/{uid} {
+      // Read stays open for the same reason as above: LeaderBoard reads a
+      // user's own handles doc to show friends' ranks.
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // chat/{room}/{room}/{messageId}, where `room` is `uidA + uidB`
+    // (two Firebase Auth uids concatenated with no separator, both orders
+    // used - see Chat.jsx senderRoom/receiverRoom). Since uids aren't
+    // split out into their own path segments, this is the best rule that
+    // can be written for the current schema; consider switching to a
+    // delimited/sorted room id (e.g. `${[uidA,uidB].sort().join('_')}`) as
+    // a follow-up so this can be tightened to an exact two-participant
+    // check instead of a substring match.
+    match /chat/{room}/{roomAgain}/{messageId} {
+      allow read, write: if request.auth != null &&
+        (room.matches('^' + request.auth.uid + '.*') || room.matches('.*' + request.auth.uid + '$'));
+    }
+  }
+}

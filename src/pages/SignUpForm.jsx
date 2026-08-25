@@ -9,7 +9,6 @@ import {
     signInWithGoogle,
 } from '../services/firebaseService';
 import { login } from '../store/authSlice';
-import { generateToken } from '../services/jwtService';
 
 function SignUpForm() {
     const fields = [
@@ -88,8 +87,6 @@ function SignUpForm() {
                 username,
             };
             dispatch(login(obj));
-            const jwtToken = await generateToken(obj);
-            localStorage.setItem('jwtToken', jwtToken);
             navigate('/');
         } catch (err) {
             console.log(err);

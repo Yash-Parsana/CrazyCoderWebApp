@@ -2,15 +2,19 @@ import { useDispatch } from 'react-redux';
 import { logout } from '../store/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { signOutUser } from '../services/firebaseService';
 
 function Logout() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     useEffect(() => {
-        dispatch(logout());
-        localStorage.removeItem("jwtToken");
-        navigate('/');
+        async function doLogout() {
+            await signOutUser();
+            dispatch(logout());
+            navigate('/');
+        }
+        doLogout();
     },[])
 
     return null;

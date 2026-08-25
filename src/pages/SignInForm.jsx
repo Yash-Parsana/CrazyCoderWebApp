@@ -10,7 +10,6 @@ import {
 } from '../services/firebaseService';
 import { login } from '../store/authSlice';
 import { useNavigate } from 'react-router-dom';
-import { generateToken } from '../services/jwtService';
 import InputPopUpForm from '../components/InputPopUpForm';
 
 function SignInForm() {
@@ -92,8 +91,6 @@ function SignInForm() {
                 username: user.username,
             };
             dispatch(login(obj));
-            const jwtToken = await generateToken(obj);
-            localStorage.setItem('jwtToken', jwtToken);
             navigate('/');
         } catch (err) {
             console.log(err);
