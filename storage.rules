@@ -1,18 +1,26 @@
 rules_version = '2';
 
-// Draft rules for Storage, matching src/services/firebaseService.js's
-// uploadImage(file, filename) which writes to images/{uid} (profile
-// avatars). NOT deployed by anything in this repo - review and deploy
-// yourself via the Firebase console or:
+// Draft rules for Storage, matching both clients' avatar upload:
+// src/services/firebaseService.js's uploadImage(file, filename) on the web
+// app, and profileFragment.kt's putBytes(...) on the Android app - both
+// write to images/{uid}. NOT deployed by anything in this repo - review
+// and deploy yourself via the Firebase console or:
 //   firebase deploy --only storage
 service firebase.storage {
   match /b/{bucket}/o {
     match /images/{uid} {
       // Avatars are shown to other users (friend lists, chat), so read stays public.
       allow read: if true;
+      // No image/* content-type check here: the web app's uploadBytes(file)
+      // gets a real image content-type for free from the browser's File
+      // object, but the Android app calls putBytes(byteArray) with no
+      // StorageMetadata anywhere in that codebase, so its uploads land as
+      // application/octet-stream - a content-type rule would reject every
+      // Android avatar upload. If you want that check, it has to start on
+      // the Android side (pass StorageMetadata with contentType set) before
+      // it's safe to enforce here.
       allow write: if request.auth != null && request.auth.uid == uid
-        && request.resource.size < 5 * 1024 * 1024
-        && request.resource.contentType.matches('image/.*');
+        && request.resource.size < 5 * 1024 * 1024;
     }
   }
 }
