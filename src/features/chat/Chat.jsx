@@ -42,8 +42,7 @@ function Chat() {
     }, []);
 
     const loadChat = (messageArr) => {
-        messageArr.sort((a, b) => a.time - b.time);
-        setMessages(messageArr);
+        setMessages(messageArr.toSorted((a, b) => a.time - b.time));
         setChatLoading(false);
     };
 
@@ -61,13 +60,7 @@ function Chat() {
         setAddFriendPopUp(false);
     };
 
-    const isPresent = (oldFriendList, user) => {
-        let isExist = false;
-        oldFriendList.forEach((ele) => {
-            isExist = isExist || ele.uid == user.uid;
-        });
-        return isExist;
-    };
+    const isPresent = (oldFriendList, user) => oldFriendList.some((ele) => ele.uid == user.uid);
 
     const sendMeggase = async (e) => {
         if (e.key && (e.key !== 'Enter' && e.keyCode !== 13)) return;
@@ -83,8 +76,7 @@ function Chat() {
             };
             const senderRoom = userData.uid + chatUser.uid;
             const receiverRoom = chatUser.uid + userData.uid;
-            await sendMessage(senderRoom, id, chatObj);
-            await sendMessage(receiverRoom, id, chatObj);
+            await Promise.all([sendMessage(senderRoom, id, chatObj), sendMessage(receiverRoom, id, chatObj)]);
         }
     };
 
@@ -95,8 +87,7 @@ function Chat() {
         const user = await isUsernameExist(username);
         if (user?.uid) {
             if (!isPresent(friendList, user)) {
-                await addToChatfriends(userData.uid, user.uid);
-                await addToChatfriends(user.uid, userData.uid);
+                await Promise.all([addToChatfriends(userData.uid, user.uid), addToChatfriends(user.uid, userData.uid)]);
                 user.chatfriends = null;
                 let newFriendList = [...friendList];
                 newFriendList.push(user);

@@ -136,8 +136,7 @@ function LeaderBoard() {
                         userList.push(handlesFb.myhandles[activePlatform]);
                     }
                     const data = await fetchLeaderBoardDataController(activePlatform, userList);
-                    data.sort((a, b) => b?.rating - a?.rating);
-                    dataConvertor(data, mycurrhandle);
+                    dataConvertor(data.toSorted((a, b) => b?.rating - a?.rating), mycurrhandle);
                 } catch (err) {
                     console.log(err);
                 } finally {
