@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "crazy-coder-8e1ec",
+    "prod": "crazy-coder-8e1ec",
+    "nonprod": "crazycoder-not-prod"
+  }
+}
