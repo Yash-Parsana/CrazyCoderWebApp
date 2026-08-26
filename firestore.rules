@@ -1,0 +1,71 @@
+rules_version = '2';
+
+// Draft rules based on the data model both clients use today: this repo's
+// web app (src/services/firebaseService.js) AND the Android app
+// (CrazyCoderApp/app/src/main/java/.../{SignIn,SignUp,Fragment/chatFragment}.kt)
+// share the same Firebase project, and both were checked against these
+// rules before writing them. NOT deployed by anything in this repo -
+// review, adjust, and deploy yourself via the Firebase console or:
+//   firebase deploy --only firestore:rules
+// This is the one place real access control has to live: nothing in
+// either client's bundle/APK can be trusted as a security boundary.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // users/{uid}: { email, status, username, chatfriends, pic }
+    //
+    // NOTE on username lookup: the Android app currently also maintains a
+    // side-index doc, users/userNameToId ({ username: uid }), and looks
+    // usernames up there instead of querying this collection. That doc is
+    // being dropped (tracked in android-web-diff.md) in favor of every
+    // client doing what the web app already does: a
+    // `where('username','==',...)` query directly against this collection,
+    // which needs no special-cased doc ID or write exception. So this rule
+    // intentionally does NOT special-case a userNameToId write anymore -
+    // deploy this only once the Android app no longer writes to that doc,
+    // or its signup flow will start failing with permission-denied.
+    match /users/{uid} {
+      // Read is open on purpose: SignUpForm/SignUp.kt check username
+      // availability BEFORE the visitor is signed in, and both apps look
+      // up friends by username too.
+      allow read: if true;
+      allow write: if request.auth != null && (
+        // the owner may write anything on their own doc
+        request.auth.uid == uid ||
+        // both apps' "add friend" flow writes the OTHER user's chatfriends
+        // array directly (Chat.jsx addFriend / chatFragment.kt) with no
+        // backend in between - so a non-owner write is allowed, but ONLY to
+        // append their own uid: nothing else may change, no existing entry
+        // may be removed, and no uid other than the caller's own may be
+        // added. hasAll(old) blocks removals; hasOnly(old + [self]) blocks
+        // adding anyone but yourself.
+        (
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['chatfriends']) &&
+          request.resource.data.chatfriends.hasAll(resource.data.chatfriends) &&
+          request.resource.data.chatfriends.hasOnly(resource.data.chatfriends.concat([request.auth.uid]))
+        )
+      );
+    }
+
+    // handles/{uid}: { myhandles: {...}, friendshandles: {...} }
+    match /handles/{uid} {
+      // Read stays open for the same reason as above: LeaderBoard reads a
+      // user's own handles doc to show friends' ranks.
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // chat/{room}/{room}/{messageId}, where `room` is `uidA + uidB`
+    // (two Firebase Auth uids concatenated with no separator, both orders
+    // used - see Chat.jsx senderRoom/receiverRoom). Since uids aren't
+    // split out into their own path segments, this is the best rule that
+    // can be written for the current schema; consider switching to a
+    // delimited/sorted room id (e.g. `${[uidA,uidB].sort().join('_')}`) as
+    // a follow-up so this can be tightened to an exact two-participant
+    // check instead of a substring match.
+    match /chat/{room}/{roomAgain}/{messageId} {
+      allow read, write: if request.auth != null &&
+        (room.matches('^' + request.auth.uid + '.*') || room.matches('.*' + request.auth.uid + '$'));
+    }
+  }
+}

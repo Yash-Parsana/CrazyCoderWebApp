@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import Form from '../components/Form';
+import { useState } from 'react';
+import Form from '../../components/Form';
 import { useDispatch } from 'react-redux';
 import {
     logInWithEmailAndPassword,
@@ -7,11 +7,10 @@ import {
     getDocumentFromFireStore,
     isUsernameExist,
     setDocumentInFirestore,
-} from '../services/firebaseService';
-import { login } from '../store/authSlice';
+} from '../../services/firebaseService';
+import { login } from './authSlice';
 import { useNavigate } from 'react-router-dom';
-import { generateToken } from '../services/jwtService';
-import InputPopUpForm from '../components/InputPopUpForm';
+import InputPopUpForm from '../../components/InputPopUpForm';
 
 function SignInForm() {
     const fields = [
@@ -63,23 +62,19 @@ function SignInForm() {
     };
 
     const handlePopBtnClick = async (username) => {
-        try {
-            const isUsernameAvailable = !(await isUsernameExist(username));
-            if (isUsernameAvailable) {
-                const obj = {
-                    email: user.email,
-                    status: false,
-                    username: username,
-                    chatfriends: [],
-                };
-                await setDocumentInFirestore('users', user.uid, obj);
-                setPopUpForm(false);
-                setUserSession(user.uid);
-            } else {
-                throw new Error(`Sorry! Username ${username} is not available.`);
-            }
-        } catch (err) {
-            throw err;
+        const isUsernameAvailable = !(await isUsernameExist(username));
+        if (isUsernameAvailable) {
+            const obj = {
+                email: user.email,
+                status: false,
+                username: username,
+                chatfriends: [],
+            };
+            await setDocumentInFirestore('users', user.uid, obj);
+            setPopUpForm(false);
+            setUserSession(user.uid);
+        } else {
+            throw new Error(`Sorry! Username ${username} is not available.`);
         }
     };
 
@@ -92,16 +87,11 @@ function SignInForm() {
                 username: user.username,
             };
             dispatch(login(obj));
-            const jwtToken = await generateToken(obj);
-            localStorage.setItem('jwtToken', jwtToken);
             navigate('/');
         } catch (err) {
             console.log(err);
         }
     };
-    // useEffect(() => {
-    //     setUserSession();
-    // },[user])
 
     return (
         <>

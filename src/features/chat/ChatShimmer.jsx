@@ -1,5 +1,3 @@
-import React from 'react';
-
 function ChatShimmer({ loading=true, chatLoading=false }) {
     return (
         <div className='grow flex overflow-hidden'>
@@ -9,13 +7,7 @@ function ChatShimmer({ loading=true, chatLoading=false }) {
                     <header className='p-4 flex bg-bgl mx-3 rounded-md animate-pulse justify-between items-center text-white'>
                         <div className='text-2xl w-1/2 rounded-md h-4 bg-dark-grey font-semibold'></div>
                         <div className='relative'>
-                            <button
-                                id='menuButton'
-                                className='focus:outline-none '
-                                onClick={() => {
-                                    setAddFriendPopUp(true);
-                                }}
-                            >
+                            <button id='menuButton' className='focus:outline-none ' disabled>
                                 <img className='h-8' src='./add-user.svg' />
                             </button>
                         </div>

@@ -24,7 +24,7 @@ const fetchRanks = async (url) => {
 const fetchFullRankingData = async (platform, username) => {
     if (!username) return null;
     try {
-        const url = `${import.meta.env.VITE_SERVER_URL}/ranking/${platform}/${username}`;
+        const url = `${import.meta.env.VITE_SERVER_URL}/ranking/${platform}/${encodeURIComponent(username)}`;
         try {
             const response = await axios.get(url);
             return response.data;
@@ -43,7 +43,7 @@ const fetchLeaderBoardDataController = async (platform, users) => {
         if (platform == 'codeforces') {
             let url = `${import.meta.env.VITE_SERVER_URL}/ranking/${platform}/`;
             users.forEach((element) => {
-                url += element + ';';
+                url += encodeURIComponent(element) + ';';
             });
             response = await fetchRanks(url);
 
@@ -58,7 +58,7 @@ const fetchLeaderBoardDataController = async (platform, users) => {
         } else {
             const prmoiseArr = [];
             users.forEach((element) => {
-                const url = `${import.meta.env.VITE_SERVER_URL}/ranking/${platform}/${element}`;
+                const url = `${import.meta.env.VITE_SERVER_URL}/ranking/${platform}/${encodeURIComponent(element)}`;
                 prmoiseArr.push(fetchRanks(url));
             });
             response = await Promise.all(prmoiseArr);

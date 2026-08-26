@@ -1,34 +1,37 @@
 import { Outlet } from 'react-router-dom';
 import Footer from './components/Footer';
 import Header from './components/Header';
-import { useEffect } from 'react';
-import { verifyToken } from './services/jwtService';
-import { login } from './store/authSlice';
+import Loader from './components/Loader';
+import { Suspense, useEffect } from 'react';
+import { onAuthChanged, getDocumentFromFireStore } from './services/firebaseService';
+import { login, logout } from './features/auth/authSlice';
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import Chat from './components/Chat';
 
 function App() {
     const dispatch = useDispatch();
     const location = useLocation();
 
     useEffect(() => {
-        async function checkAuth() {
-            const jwtToken = localStorage.getItem('jwtToken');
-            if (jwtToken) {
-                const user = await verifyToken(jwtToken);
-                if (user) {
-                    dispatch(login(user));
-                }
+        const unsubscribe = onAuthChanged(async (firebaseUser) => {
+            if (!firebaseUser) {
+                dispatch(logout());
+                return;
             }
-        }
-        checkAuth();
-    }, []);
+            const userDoc = await getDocumentFromFireStore('users', firebaseUser.uid);
+            if (userDoc) {
+                dispatch(login({ email: userDoc.email, uid: firebaseUser.uid, username: userDoc.username }));
+            }
+        });
+        return () => unsubscribe();
+    }, [dispatch]);
 
     if (location.pathname == '/chat') {
         return (
             <main>
-                <Outlet />
+                <Suspense fallback={<Loader />}>
+                    <Outlet />
+                </Suspense>
             </main>
         );
     } else {
@@ -36,7 +39,9 @@ function App() {
             <>
                 <Header />
                 <main>
-                    <Outlet />
+                    <Suspense fallback={<Loader />}>
+                        <Outlet />
+                    </Suspense>
                 </main>
                 <Footer />
             </>

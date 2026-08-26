@@ -1,9 +1,6 @@
-import React from 'react';
-
 function ProfileShimmer({ lLoading=false, rLoading=false }) {
     return (
         <>
-            //{' '}
             {/* <div className='flex w-full items-start h-screen'> */}
                 {lLoading && (
                     <div className='w-2/5 flex-1 h-full'>
@@ -59,7 +56,6 @@ function ProfileShimmer({ lLoading=false, rLoading=false }) {
                         </div>
                     </div>
                 )}
-                //{' '}
             {/* </div> */}
         </>
     );

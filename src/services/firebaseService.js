@@ -4,6 +4,8 @@ import {
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
     signInWithPopup,
+    onAuthStateChanged,
+    signOut,
 } from 'firebase/auth';
 import {
     getFirestore,
@@ -17,6 +19,7 @@ import {
     updateDoc,
     documentId,
     onSnapshot,
+    arrayUnion,
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import app from './firebaseConfig';
@@ -26,55 +29,34 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 const logInWithEmailAndPassword = async (email, password) => {
-    return await signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-            const authUser = auth.currentUser;
-            return authUser;
-        })
-        .catch((error) => {
-            throw error;
-        });
+    await signInWithEmailAndPassword(auth, email, password);
+    return auth.currentUser;
 };
 
 const signUpWithEmailAndPass = async (email, password) => {
-    return await createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-            return user;
-        })
-        .catch((error) => {
-            throw error;
-        });
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    return userCredential.user;
 };
 
 const isUsernameExist = async (username) => {
-    try {
-        const q = query(collection(db, 'users'), where('username', '==', username));
-        const users = await getDocs(q);
-        let userInDb = null;
-        users.forEach((doc) => {
-            userInDb = {
-                uid: doc.id,
-                username: doc.data().username,
-                status: doc.data().status,
-                imgurl: doc.data().pic,
-                chatfriends: doc.data().chatfriends,
-            };
-        });
-        return userInDb;
-    } catch (err) {
-        throw err;
-    }
+    const q = query(collection(db, 'users'), where('username', '==', username));
+    const users = await getDocs(q);
+    let userInDb = null;
+    users.forEach((doc) => {
+        userInDb = {
+            uid: doc.id,
+            username: doc.data().username,
+            status: doc.data().status,
+            imgurl: doc.data().pic,
+            chatfriends: doc.data().chatfriends,
+        };
+    });
+    return userInDb;
 };
 
 const setDocumentInFirestore = async (collection, document, object) => {
-    try {
-        await setDoc(doc(db, collection, document), object);
-        return true;
-    } catch (err) {
-        throw err;
-    }
+    await setDoc(doc(db, collection, document), object);
+    return true;
 };
 
 const getMultipleDocsFromFirestore = async (coll, docArray) => {
@@ -97,27 +79,9 @@ const getMultipleDocsFromFirestore = async (coll, docArray) => {
 };
 
 const getDocumentFromFireStore = async (collection, document) => {
-    try {
-        const docRef = doc(db, collection, document);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-            return docSnap.data();
-        } else {
-            return null;
-        }
-    } catch (err) {
-        throw err;
-    }
-};
-
-const getChatsFromFireStore = async (doc) => {
-    try {
-        const q = query(collection(db, 'chat', doc, doc));
-        const chats = await getDocs(q);
-    } catch (err) {
-        console.log(err);
-    }
+    const docRef = doc(db, collection, document);
+    const docSnap = await getDoc(docRef);
+    return docSnap.exists() ? docSnap.data() : null;
 };
 
 const chatListener = (docPath, callback) => {
@@ -151,39 +115,49 @@ const sendMessage = async (docPath, docId, chatObj) => {
 const updateDocField = async (coll, docc, keyValueObj) => {
     try {
         const docRef = doc(db, coll, docc);
-        const res = await updateDoc(docRef, keyValueObj);
+        await updateDoc(docRef, keyValueObj);
     } catch (err) {
         console.log(err);
     }
 };
 
-const uploadImage =async (file,filename) => {
+const addToChatfriends = async (uid, friendUid) => {
+    const docRef = doc(db, 'users', uid);
+    await updateDoc(docRef, { chatfriends: arrayUnion(friendUid) });
+};
+
+const uploadImage = async (file, filename) => {
     try {
         const storageRef = ref(storage, `images/${filename}`);
-        const uploadTask = await uploadBytes(storageRef, file);
+        await uploadBytes(storageRef, file);
         const url = await getDownloadURL(storageRef);
         return url;
-    }
-    catch (err) {
+    } catch (err) {
         console.log(err);
         return null;
     }
-}
+};
+
+const onAuthChanged = (callback) => {
+    return onAuthStateChanged(auth, callback);
+};
+
+const signOutUser = async () => {
+    try {
+        await signOut(auth);
+    } catch (err) {
+        console.log(err);
+    }
+};
 
 const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     try {
-        return await signInWithPopup(auth, provider)
-            .then((result) => {
-                const credential = GoogleAuthProvider.credentialFromResult(result);
-                const token = credential.accessToken;
-                const user = result.user;
-                return user;
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    } catch (err) {}
+        const result = await signInWithPopup(auth, provider);
+        return result.user;
+    } catch (err) {
+        console.log(err);
+    }
 };
 
 export {
@@ -194,9 +168,11 @@ export {
     signInWithGoogle,
     getDocumentFromFireStore,
     getMultipleDocsFromFirestore,
-    getChatsFromFireStore,
     updateDocField,
+    addToChatfriends,
     sendMessage,
     chatListener,
     uploadImage,
+    onAuthChanged,
+    signOutUser,
 };

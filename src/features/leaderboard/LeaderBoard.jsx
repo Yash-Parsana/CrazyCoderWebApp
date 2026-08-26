@@ -1,56 +1,59 @@
-import React, { useEffect, useState } from 'react';
-import SelectionPanel from '../components/SelectionPanel';
-import InputPopUpForm from '../components/InputPopUpForm';
-import Board from '../components/Board';
-import LB_Shimmer from './LB_Shimmer';
-import { getDocumentFromFireStore, setDocumentInFirestore } from '../services/firebaseService';
+import { useEffect, useState } from 'react';
+import SelectionPanel from '../../components/SelectionPanel';
+import InputPopUpForm from '../../components/InputPopUpForm';
+import Board from '../../components/Board';
+import SkeletonRows from '../../components/SkeletonRows';
+import { getDocumentFromFireStore, setDocumentInFirestore } from '../../services/firebaseService';
 import { useSelector } from 'react-redux';
-import { fetchLeaderBoardDataController } from '../services/fetchData';
+import { fetchLeaderBoardDataController } from '../../services/fetchData';
+import { getPlatformSlug } from '../../constants/platforms';
+
+const RANK_ROW_WIDTHS = ['w-3/4', 'w-1/4'];
+
+const PANEL_OBJ = {
+    type: 'leaderboard',
+    platforms: [
+        {
+            name: 'Atcoder',
+            slug: 'at_coder',
+        },
+        {
+            name: 'Codechef',
+            slug: 'code_chef',
+        },
+        {
+            name: 'Codeforces',
+            slug: 'codeforces',
+        },
+        {
+            name: 'Leetcode',
+            slug: 'leet_code',
+        },
+    ],
+    cornerButton: 'Add Friend',
+};
+
+const BOARD_HEAD_OBJ = {
+    bgc: 'bg-blue',
+    px: 'px-6 lg:px-10',
+    lipx: '',
+    py: 'py-5 lg:py-5',
+    fz: 'text-lg lg:text-xl',
+    row: [
+        {
+            text: 'User Handle',
+            width: 'w-3/4',
+            ta: 'text-left',
+        },
+        {
+            text: 'Rating',
+            width: 'w-1/4',
+            ta: 'text-center',
+        },
+    ],
+};
 
 function LeaderBoard() {
-    const panelObj = {
-        type: 'leaderboard',
-        platforms: [
-            {
-                name: 'Atcoder',
-                slug: 'at_coder',
-            },
-            {
-                name: 'Codechef',
-                slug: 'code_chef',
-            },
-            {
-                name: 'Codeforces',
-                slug: 'codeforces',
-            },
-            {
-                name: 'Leetcode',
-                slug: 'leet_code',
-            },
-        ],
-        cornerButton: 'Add Friend',
-    };
-
-    const boardHeadObj = {
-        bgc: 'bg-blue',
-        px: 'px-6 lg:px-10',
-        lipx: '',
-        py: 'py-5 lg:py-5',
-        fz: 'text-lg lg:text-xl',
-        row: [
-            {
-                text: 'User Handle',
-                width: 'w-3/4',
-                ta: 'text-left',
-            },
-            {
-                text: 'Rating',
-                width: 'w-1/4',
-                ta: 'text-center',
-            },
-        ],
-    };
-
     const [activePlatform, setActivePlatform] = useState('at_coder');
     const [addFriendPopUp, setAddfriendPopUp] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -62,18 +65,6 @@ function LeaderBoard() {
         setLoading(true);
         setAddfriendPopUp(false);
         setActivePlatform(currPlatform);
-    };
-
-    const getPlatformSlug = (platform) => {
-        if (platform.toLowerCase() == 'codechef') {
-            return 'code_chef';
-        } else if (platform.toLowerCase() == 'codeforces') {
-            return 'codeforces';
-        } else if (platform.toLowerCase() == 'leetcode') {
-            return 'leet_code';
-        } else if (platform.toLowerCase() == 'atcoder') {
-            return 'at_coder';
-        } else return null;
     };
 
     const showAddFriendPopup = async () => {
@@ -126,6 +117,9 @@ function LeaderBoard() {
             setHandlesFb(handles ?? {});
         }
         getHandles();
+        // Runs once for the session this component is mounted under; userData is
+        // intentionally excluded so this doesn't re-fetch on every re-render.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -155,7 +149,10 @@ function LeaderBoard() {
             }
         }
         prapreRankList();
-    }, [JSON.stringify(handlesFb), activePlatform]);
+        // Depending on the active platform's own handle/friend-handle values (not
+        // the whole handlesFb object) so this only re-fetches when those change.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [handlesFb.friendshandles?.[activePlatform], handlesFb.myhandles?.[activePlatform], activePlatform]);
 
     function setPlatformHandles(handles, platform, platformArray) {
         handles.friendshandles = handles.friendshandles ?? {};
@@ -225,12 +222,12 @@ function LeaderBoard() {
         <>
             <div className='sticky top-0 bg-bgcolor'>
                 <SelectionPanel
-                    {...panelObj}
+                    {...PANEL_OBJ}
                     activePlatform={activePlatform}
                     slectPlatform={slectPlatform}
                     cornerBtnClickFun={showAddFriendPopup}
                 />
-                <Board {...boardHeadObj} />
+                <Board {...BOARD_HEAD_OBJ} />
             </div>
             {addFriendPopUp && (
                 <div className='absolute w-full bg-transparent'>
@@ -243,7 +240,7 @@ function LeaderBoard() {
                     />
                 </div>
             )}
-            {loading && <LB_Shimmer />}
+            {loading && <SkeletonRows widths={RANK_ROW_WIDTHS} />}
             {!loading &&
                 (rankList.length ? (
                     <div className='flex flex-col min-h-96 lg:min-h-screen'>
@@ -254,10 +251,10 @@ function LeaderBoard() {
                 ) : (
                     <div className='min-h-96 lg:min-h-screen flex flex-col py-24 px-8'>
                         <h1 className='text-white text-3xl text-center h-fit'>
-                            Please add your and your friend's platform handles.
+                            Please add your and your friend&apos;s platform handles.
                         </h1>
                         <h2 className='text-white text-xl text-center h-fit p-2'>
-                            You can add your handle in profile section and your friend's handle at top left corner.
+                            You can add your handle in profile section and your friend&apos;s handle at top left corner.
                         </h2>
                     </div>
                 ))}
