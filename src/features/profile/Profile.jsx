@@ -102,7 +102,11 @@ function Profile() {
         let active = true;
         async function loadHandles() {
             try {
-                if (!handles) return;
+                if (!handles) {
+                    setMyPlatformData([]);
+                    setrLoading(false);
+                    return;
+                }
                 setrLoading(true);
                 setMyPlatformData([]);
                 const rankingData = await fetchFullRankingData(activePlatform, handles?.[activePlatform]);
