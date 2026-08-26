@@ -74,9 +74,13 @@ function Home() {
     const [activePlatform, setActivePlatform] = useState('at_coder');
     const [contestType, setContestType] = useState('Upcoming');
     const [loading, setLoading] = useState(true);
-    const [contestData, setContestData] = useState([]);
     const [onGoingContestData, setOnGoingContestData] = useState([]);
     const [upComingContestData, setUpComingContestData] = useState([]);
+
+    // Derived during render instead of its own state - contestType already
+    // tells us which of the two lists is showing, so a separate
+    // contestData state could only ever drift out of sync with it.
+    const contestData = contestType === 'Ongoing' ? onGoingContestData : upComingContestData;
 
     const slectPlatform = (currPlatform) => {
         setLoading(true);
@@ -85,13 +89,7 @@ function Home() {
     };
 
     const changeContestType = (type) => {
-        if (type.toLowerCase() === 'upcoming') {
-            setContestType('Ongoing');
-            setContestData(onGoingContestData);
-        } else {
-            setContestType('Upcoming');
-            setContestData(upComingContestData);
-        }
+        setContestType(type.toLowerCase() === 'upcoming' ? 'Ongoing' : 'Upcoming');
     };
 
     const dataConvertor = (dataArray) => {
@@ -132,10 +130,8 @@ function Home() {
         }
         if (UcontestDataObj.length) {
             setUpComingContestData(UcontestDataObj);
-            setContestData(UcontestDataObj);
         } else {
             setUpComingContestData([makeDefaultContestRow('No Upcoming Contest')]);
-            setContestData([makeDefaultContestRow('No Upcoming Contest')]);
         }
     };
 
