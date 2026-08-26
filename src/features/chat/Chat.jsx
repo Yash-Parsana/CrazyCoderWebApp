@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { customAlphabet } from 'nanoid';
-import Header from './Header';
+import Header from '../../components/Header';
 import { useSelector } from 'react-redux';
-import InputPopUpForm from './InputPopUpForm';
+import InputPopUpForm from '../../components/InputPopUpForm';
 import {
     getDocumentFromFireStore,
     getMultipleDocsFromFirestore,
@@ -10,7 +10,7 @@ import {
     updateDocField,
     sendMessage,
     chatListener,
-} from '../services/firebaseService';
+} from '../../services/firebaseService';
 import ChatShimmer from './ChatShimmer';
 
 function Chat() {

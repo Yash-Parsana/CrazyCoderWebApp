@@ -1,4 +1,4 @@
-import Form from '../components/Form';
+import Form from '../../components/Form';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
@@ -6,8 +6,8 @@ import {
     setDocumentInFirestore,
     isUsernameExist,
     signInWithGoogle,
-} from '../services/firebaseService';
-import { login } from '../store/authSlice';
+} from '../../services/firebaseService';
+import { login } from './authSlice';
 
 function SignUpForm() {
     const fields = [

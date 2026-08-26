@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import SelectionPanel from '../components/SelectionPanel';
-import InputPopUpForm from '../components/InputPopUpForm';
-import Board from '../components/Board';
-import SkeletonRows from '../components/SkeletonRows';
+import SelectionPanel from '../../components/SelectionPanel';
+import InputPopUpForm from '../../components/InputPopUpForm';
+import Board from '../../components/Board';
+import SkeletonRows from '../../components/SkeletonRows';
+import { getDocumentFromFireStore, setDocumentInFirestore } from '../../services/firebaseService';
+import { useSelector } from 'react-redux';
+import { fetchLeaderBoardDataController } from '../../services/fetchData';
+import { getPlatformSlug } from '../../constants/platforms';
 
 const RANK_ROW_WIDTHS = ['w-3/4', 'w-1/4'];
-import { getDocumentFromFireStore, setDocumentInFirestore } from '../services/firebaseService';
-import { useSelector } from 'react-redux';
-import { fetchLeaderBoardDataController } from '../services/fetchData';
-import { getPlatformSlug } from '../constants/platforms';
 
 const PANEL_OBJ = {
     type: 'leaderboard',

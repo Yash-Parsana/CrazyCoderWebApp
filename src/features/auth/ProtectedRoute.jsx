@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import Error from './Error'
+import Error from '../../components/Error'
 
 const ProtectedRoute = ({ children }) => {
     const authStatus = useSelector((state) => state.auth.status);

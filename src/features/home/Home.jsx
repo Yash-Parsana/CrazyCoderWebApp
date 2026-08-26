@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import SelectionPanel from '../components/SelectionPanel';
-import Board from '../components/Board';
-import { fetchContestData } from '../services/fetchData';
-import { formatTimestamp } from '../services/timeFormatter';
-import SkeletonRows from '../components/SkeletonRows';
+import SelectionPanel from '../../components/SelectionPanel';
+import Board from '../../components/Board';
+import { fetchContestData } from '../../services/fetchData';
+import { formatTimestamp } from '../../services/timeFormatter';
+import SkeletonRows from '../../components/SkeletonRows';
 
 const CONTEST_ROW_WIDTHS = ['w-1/2', 'w-1/4', 'w-1/4'];
 

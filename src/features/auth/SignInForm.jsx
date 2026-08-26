@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Form from '../components/Form';
+import Form from '../../components/Form';
 import { useDispatch } from 'react-redux';
 import {
     logInWithEmailAndPassword,
@@ -7,10 +7,10 @@ import {
     getDocumentFromFireStore,
     isUsernameExist,
     setDocumentInFirestore,
-} from '../services/firebaseService';
-import { login } from '../store/authSlice';
+} from '../../services/firebaseService';
+import { login } from './authSlice';
 import { useNavigate } from 'react-router-dom';
-import InputPopUpForm from '../components/InputPopUpForm';
+import InputPopUpForm from '../../components/InputPopUpForm';
 
 function SignInForm() {
     const fields = [

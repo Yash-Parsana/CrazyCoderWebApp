@@ -3,7 +3,7 @@ import Footer from './components/Footer';
 import Header from './components/Header';
 import { useEffect } from 'react';
 import { onAuthChanged, getDocumentFromFireStore } from './services/firebaseService';
-import { login, logout } from './store/authSlice';
+import { login, logout } from './features/auth/authSlice';
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 

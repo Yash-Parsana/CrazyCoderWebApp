@@ -1,8 +1,8 @@
 import { useDispatch } from 'react-redux';
-import { logout } from '../store/authSlice';
+import { logout } from './authSlice';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { signOutUser } from '../services/firebaseService';
+import { signOutUser } from '../../services/firebaseService';
 
 function Logout() {
     const dispatch = useDispatch();

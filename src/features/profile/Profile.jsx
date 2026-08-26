@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getDocumentFromFireStore, uploadImage, updateDocField } from '../services/firebaseService';
-import SelectionPanel from '../components/SelectionPanel';
-import InputPopUpForm from '../components/InputPopUpForm';
-import { fetchFullRankingData, fetchLeaderBoardDataController } from '../services/fetchData';
-import Board from '../components/Board';
-import ProfileShimmer from '../components/ProfileShimmer';
-import { getPlatformSlug } from '../constants/platforms';
+import { getDocumentFromFireStore, uploadImage, updateDocField } from '../../services/firebaseService';
+import SelectionPanel from '../../components/SelectionPanel';
+import InputPopUpForm from '../../components/InputPopUpForm';
+import { fetchFullRankingData, fetchLeaderBoardDataController } from '../../services/fetchData';
+import Board from '../../components/Board';
+import ProfileShimmer from './ProfileShimmer';
+import { getPlatformSlug } from '../../constants/platforms';
 
 const PANEL_OBJ = {
     type: 'leaderboard',
