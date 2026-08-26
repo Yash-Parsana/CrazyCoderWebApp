@@ -6,7 +6,6 @@ import { onAuthChanged, getDocumentFromFireStore } from './services/firebaseServ
 import { login, logout } from './store/authSlice';
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import Chat from './components/Chat';
 
 function App() {
     const dispatch = useDispatch();
@@ -24,7 +23,7 @@ function App() {
             }
         });
         return () => unsubscribe();
-    }, []);
+    }, [dispatch]);
 
     if (location.pathname == '/chat') {
         return (

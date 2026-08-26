@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Form from '../components/Form';
 import { useDispatch } from 'react-redux';
 import {
@@ -62,23 +62,19 @@ function SignInForm() {
     };
 
     const handlePopBtnClick = async (username) => {
-        try {
-            const isUsernameAvailable = !(await isUsernameExist(username));
-            if (isUsernameAvailable) {
-                const obj = {
-                    email: user.email,
-                    status: false,
-                    username: username,
-                    chatfriends: [],
-                };
-                await setDocumentInFirestore('users', user.uid, obj);
-                setPopUpForm(false);
-                setUserSession(user.uid);
-            } else {
-                throw new Error(`Sorry! Username ${username} is not available.`);
-            }
-        } catch (err) {
-            throw err;
+        const isUsernameAvailable = !(await isUsernameExist(username));
+        if (isUsernameAvailable) {
+            const obj = {
+                email: user.email,
+                status: false,
+                username: username,
+                chatfriends: [],
+            };
+            await setDocumentInFirestore('users', user.uid, obj);
+            setPopUpForm(false);
+            setUserSession(user.uid);
+        } else {
+            throw new Error(`Sorry! Username ${username} is not available.`);
         }
     };
 
@@ -96,9 +92,6 @@ function SignInForm() {
             console.log(err);
         }
     };
-    // useEffect(() => {
-    //     setUserSession();
-    // },[user])
 
     return (
         <>

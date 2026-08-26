@@ -15,7 +15,7 @@ function Logout() {
             navigate('/');
         }
         doLogout();
-    },[])
+    }, [dispatch, navigate])
 
     return null;
 }

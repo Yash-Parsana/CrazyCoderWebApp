@@ -1,5 +1,3 @@
-import React from 'react';
-
 function ProfileShimmer({ lLoading=false, rLoading=false }) {
     return (
         <>

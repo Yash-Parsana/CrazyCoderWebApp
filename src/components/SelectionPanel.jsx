@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useRef } from 'react';
 
 function SelectionPanel({ type, platforms, cornerButton, activePlatform, slectPlatform, cornerBtnClickFun }) {
     const handleCornerButtonClick = (e) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { customAlphabet } from 'nanoid';
 import Header from './Header';
 import { useSelector } from 'react-redux';
@@ -6,7 +6,6 @@ import InputPopUpForm from './InputPopUpForm';
 import {
     getDocumentFromFireStore,
     getMultipleDocsFromFirestore,
-    getChatsFromFireStore,
     isUsernameExist,
     updateDocField,
     sendMessage,
@@ -36,6 +35,10 @@ function Chat() {
             setLoading(false);
         }
         getFriends();
+        // Runs once for the session this component is mounted under (a route change
+        // to /chat always follows a fresh auth state); userData.uid intentionally
+        // excluded so this doesn't re-fetch every time the object reference changes.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const loadChat = (messageArr) => {
@@ -49,6 +52,9 @@ function Chat() {
         const senderRoom = userData.uid + chatUser.uid;
         const unsubscribe = chatListener(senderRoom, loadChat);
         return () => unsubscribe();
+        // Depending on chatUser?.uid (not the whole chatUser object) so this only
+        // re-subscribes when the selected conversation actually changes.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [chatUser?.uid]);
 
     const closePopUp = () => {
@@ -83,40 +89,33 @@ function Chat() {
     };
 
     const addFriend = async (username) => {
-        try {
-            if (username === userData.username) {
-                throw new Error(`You can not add your username.`);
+        if (username === userData.username) {
+            throw new Error(`You can not add your username.`);
+        }
+        const user = await isUsernameExist(username);
+        if (user?.uid) {
+            if (!isPresent(friendList, user)) {
+                const newFriendUidList = friendList.map((ele) => ele.uid);
+                newFriendUidList.push(user.uid);
+                const theirFriendUidList = user.chatfriends ?? [];
+                theirFriendUidList.push(userData.uid);
+                await updateDocField('users', userData.uid, { chatfriends: newFriendUidList });
+                await updateDocField('users', user.uid, { chatfriends: theirFriendUidList });
+                user.chatfriends = null;
+                let newFriendList = [...friendList];
+                newFriendList.push(user);
+                setFriendList(newFriendList);
             }
-            const user = await isUsernameExist(username);
-            if (user?.uid) {
-                if (!isPresent(friendList, user)) {
-                    const newFriendUidList = friendList.map((ele) => ele.uid);
-                    newFriendUidList.push(user.uid);
-                    const theirFriendUidList = user.chatfriends ?? [];
-                    theirFriendUidList.push(userData.uid);
-                    await updateDocField('users', userData.uid, { chatfriends: newFriendUidList });
-                    await updateDocField('users', user.uid, { chatfriends: theirFriendUidList });
-                    user.chatfriends = null;
-                    let newFriendList = [...friendList];
-                    newFriendList.push(user);
-                    setFriendList(newFriendList);
-                }
-                setAddFriendPopUp(false);
-            } else {
-                throw new Error(`Username ${username} does not exist.`);
-            }
-        } catch (err) {
-            throw err;
+            setAddFriendPopUp(false);
+        } else {
+            throw new Error(`Username ${username} does not exist.`);
         }
     };
 
-    const openChat = async (user) => {
-        try {
-            setMessages(null);
-            setChatLoading(true);
-            // setChatLoading(false);
-            setChatUser(user);
-        } catch (err) {}
+    const openChat = (user) => {
+        setMessages(null);
+        setChatLoading(true);
+        setChatUser(user);
     };
 
     return (

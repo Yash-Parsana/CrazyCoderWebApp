@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getDocumentFromFireStore, uploadImage, updateDocField } from '../services/firebaseService';
 import SelectionPanel from '../components/SelectionPanel';
@@ -6,31 +6,32 @@ import InputPopUpForm from '../components/InputPopUpForm';
 import { fetchFullRankingData, fetchLeaderBoardDataController } from '../services/fetchData';
 import Board from '../components/Board';
 import ProfileShimmer from '../components/ProfileShimmer';
+import { getPlatformSlug } from '../constants/platforms';
+
+const PANEL_OBJ = {
+    type: 'leaderboard',
+    platforms: [
+        {
+            name: 'Atcoder',
+            slug: 'at_coder',
+        },
+        {
+            name: 'Codechef',
+            slug: 'code_chef',
+        },
+        {
+            name: 'Codeforces',
+            slug: 'codeforces',
+        },
+        {
+            name: 'Leetcode',
+            slug: 'leet_code',
+        },
+    ],
+    cornerButton: 'Add Handle',
+};
 
 function Profile() {
-    const panelObj = {
-        type: 'leaderboard',
-        platforms: [
-            {
-                name: 'Atcoder',
-                slug: 'at_coder',
-            },
-            {
-                name: 'Codechef',
-                slug: 'code_chef',
-            },
-            {
-                name: 'Codeforces',
-                slug: 'codeforces',
-            },
-            {
-                name: 'Leetcode',
-                slug: 'leet_code',
-            },
-        ],
-        cornerButton: 'Add Handle',
-    };
-
     const userData = useSelector((state) => state.auth.userData); // {uid,username,email}
     const [user, setUser] = useState(null); //{uid,username,imgurl}
     const [handles, setHandles] = useState(null);
@@ -64,6 +65,9 @@ function Profile() {
             }
         }
         loadUser();
+        // Runs once for the session this component is mounted under; userData is
+        // intentionally excluded so this doesn't re-fetch on every re-render.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const trnasformData = (data) => {
@@ -118,7 +122,11 @@ function Profile() {
         return () => {
             active = false;
         };
-    }, [JSON.stringify(handles), activePlatform]);
+        // Depending on the specific platform's handle value (not the whole handles
+        // object) so this only re-fetches when the active platform's own handle
+        // actually changes.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [handles?.[activePlatform], activePlatform]);
 
     const upLoadImage = async (e) => {
         try {
@@ -148,18 +156,6 @@ function Profile() {
 
     const closePopUp = () => {
         setAddfriendPopUp(false);
-    };
-
-    const getPlatformSlug = (platform) => {
-        if (platform.toLowerCase() == 'codechef') {
-            return 'code_chef';
-        } else if (platform.toLowerCase() == 'codeforces') {
-            return 'codeforces';
-        } else if (platform.toLowerCase() == 'leetcode') {
-            return 'leet_code';
-        } else if (platform.toLowerCase() == 'atcoder') {
-            return 'at_coder';
-        } else return null;
     };
 
     const isAddableAcc = async (platform, handle) => {
@@ -268,7 +264,7 @@ function Profile() {
                 )}
                 <div className='w-3/5 flex-1 py-10'>
                     <SelectionPanel
-                        {...panelObj}
+                        {...PANEL_OBJ}
                         activePlatform={activePlatform}
                         slectPlatform={slectPlatform}
                         cornerBtnClickFun={showAddFriendPopup}

@@ -1,85 +1,76 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import SelectionPanel from '../components/SelectionPanel';
 import Board from '../components/Board';
 import { fetchContestData } from '../services/fetchData';
 import { formatTimestamp } from '../services/timeFormatter';
-import HomeShimmer from './HomeShimmer';
+import SkeletonRows from '../components/SkeletonRows';
+
+const CONTEST_ROW_WIDTHS = ['w-1/2', 'w-1/4', 'w-1/4'];
+
+const PANEL_OBJ = {
+    type: 'contest',
+    platforms: [
+        {
+            name: 'Atcoder',
+            slug: 'at_coder',
+        },
+        {
+            name: 'Codechef',
+            slug: 'code_chef',
+        },
+        {
+            name: 'Codeforces',
+            slug: 'codeforces',
+        },
+        {
+            name: 'Hackerrank',
+            slug: 'hacker_rank',
+        },
+        {
+            name: 'Hackerearth',
+            slug: 'hacker_earth',
+        },
+        {
+            name: 'Leetcode',
+            slug: 'leet_code',
+        },
+    ],
+};
+
+const BOARD_HEAD_OBJ = {
+    bgc: 'bg-blue',
+    px: 'px-2 lg:px-10',
+    lipx: '',
+    py: 'py-2 lg:py-5',
+    fz: 'text-lg lg:text-xl',
+    row: [
+        {
+            text: 'Contest Name',
+            width: 'w-1/2',
+            ta: 'text-left text-md lg:text-xl',
+        },
+        {
+            text: 'Start Time',
+            width: 'w-1/4',
+            ta: 'text-center text-md lg:text-xl',
+        },
+        {
+            text: 'End Time',
+            width: 'w-1/4',
+            ta: ' text-center text-md lg:text-xl',
+        },
+    ],
+};
+
+const makeDefaultContestRow = (text) => ({
+    row: [
+        { text, width: 'w-1/2', ta: 'text-left' },
+        { text: '-', width: 'w-1/4', ta: 'text-center' },
+        { text: '-', width: 'w-1/4', ta: ' text-center' },
+    ],
+});
 
 function Home() {
-    const panelObj = {
-        type: 'contest',
-        platforms: [
-            {
-                name: 'Atcoder',
-                slug: 'at_coder',
-            },
-            {
-                name: 'Codechef',
-                slug: 'code_chef',
-            },
-            {
-                name: 'Codeforces',
-                slug: 'codeforces',
-            },
-            {
-                name: 'Hackerrank',
-                slug: 'hacker_rank',
-            },
-            {
-                name: 'Hackerearth',
-                slug: 'hacker_earth',
-            },
-            {
-                name: 'Leetcode',
-                slug: 'leet_code',
-            },
-        ],
-    };
-
-    const boardHeadObj = {
-        bgc: 'bg-blue',
-        px: 'px-2 lg:px-10',
-        lipx: '',
-        py: 'py-2 lg:py-5',
-        fz: 'text-lg lg:text-xl',
-        row: [
-            {
-                text: 'Contest Name',
-                width: 'w-1/2',
-                ta: 'text-left text-md lg:text-xl',
-            },
-            {
-                text: 'Start Time',
-                width: 'w-1/4',
-                ta: 'text-center text-md lg:text-xl',
-            },
-            {
-                text: 'End Time',
-                width: 'w-1/4',
-                ta: ' text-center text-md lg:text-xl',
-            },
-        ],
-    };
-    const defaultValObj = {
-        row: [
-            {
-                text: '',
-                width: 'w-1/2',
-                ta: 'text-left',
-            },
-            {
-                text: '-',
-                width: 'w-1/4',
-                ta: 'text-center',
-            },
-            {
-                text: '-',
-                width: 'w-1/4',
-                ta: ' text-center',
-            },
-        ],
-    };
-    
     const [activePlatform, setActivePlatform] = useState('at_coder');
     const [contestType, setContestType] = useState('Upcoming');
     const [loading, setLoading] = useState(true);
@@ -137,16 +128,14 @@ function Home() {
         if (OcontestDataObj.length) {
             setOnGoingContestData(OcontestDataObj);
         } else {
-            defaultValObj.row[0].text = 'No Ongoing Contest';
-            setOnGoingContestData([defaultValObj]);
+            setOnGoingContestData([makeDefaultContestRow('No Ongoing Contest')]);
         }
         if (UcontestDataObj.length) {
             setUpComingContestData(UcontestDataObj);
             setContestData(UcontestDataObj);
         } else {
-            defaultValObj.row[0].text = 'No Upcoming Contest';
-            setUpComingContestData([defaultValObj]);
-            setContestData([defaultValObj]);
+            setUpComingContestData([makeDefaultContestRow('No Upcoming Contest')]);
+            setContestData([makeDefaultContestRow('No Upcoming Contest')]);
         }
     };
 
@@ -172,11 +161,11 @@ function Home() {
                     activePlatform={activePlatform}
                     cornerBtnClickFun={changeContestType}
                     slectPlatform={slectPlatform}
-                    {...panelObj}
+                    {...PANEL_OBJ}
                 />
-                <Board {...boardHeadObj} />
+                <Board {...BOARD_HEAD_OBJ} />
             </div>
-            {loading && <HomeShimmer />}
+            {loading && <SkeletonRows widths={CONTEST_ROW_WIDTHS} />}
             {!loading && (
                 <div className='flex flex-col min-h-96 lg:min-h-screen'>
                     {contestData.map((obj, index) => (

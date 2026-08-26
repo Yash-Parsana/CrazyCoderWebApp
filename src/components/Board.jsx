@@ -1,4 +1,3 @@
-import React from 'react';
 import parse from 'html-react-parser';
 
 function Board({ bgc = 'bg-transparent', px = 'px-4', lipx = 'px-3', py = 'py-2', fz = 'text-base lg:text-lg', row, deleteBtnClick = null }) {
