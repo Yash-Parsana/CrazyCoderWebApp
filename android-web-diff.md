@@ -97,4 +97,33 @@ touches.
 
 ## New (introduced by a web-app change after the initial audit)
 
-_(none yet - append here as web-app changes affect anything Android touches)_
+### 2026-08-26 (commit 3093f52): `chatfriends` write rule tightened
+
+- **What changed**: `firestore.rules`' non-owner write exception for
+  `users/{uid}.chatfriends` used to allow a signed-in caller to replace
+  the *entire* array with anything, as long as `chatfriends` was the only
+  field touched. It's now restricted to append-only-your-own-uid:
+  `hasAll(oldArray)` (nothing removed) and
+  `hasOnly(oldArray + [callerUid])` (nothing added except the caller's own
+  uid).
+- **Web-side change that motivated it**: `Chat.jsx`'s `addFriend` used to
+  read both users' full `chatfriends` arrays, push the new uid locally,
+  then write the full array back (`updateDocField`) - a read-modify-write
+  race if two people added the same user around the same time. Replaced
+  with a new `addToChatfriends(uid, friendUid)` in `firebaseService.js`
+  that does `updateDoc(ref, { chatfriends: arrayUnion(friendUid) })` -
+  atomic, and it's what makes the tightened rule provable (the rule cares
+  about the *resulting* old/new relationship, not how the client computed
+  it, so this wasn't strictly required for the rule change, but closes the
+  same race the rule is now guarding against).
+- **Is Android compatible right now?**: yes, verified - `chatFragment.kt`'s
+  existing read-full-array-then-write-full-array pattern still satisfies
+  `hasAll`/`hasOnly` as long as it only ever adds the caller's own uid
+  (which is all it does today). No Android change is required for this
+  rule update to keep working.
+- **Optional follow-up for Android**: adopt the same fix as the web app -
+  Android's Firestore SDK also has `FieldValue.arrayUnion(uid)`; switching
+  `chatFragment.kt`'s two `.update("chatfriends", list)` calls to
+  `.update("chatfriends", FieldValue.arrayUnion(uid))` would remove
+  Android's equivalent read-modify-write race the same way. Not required
+  for compatibility, just closes the same latent bug on that side too.
