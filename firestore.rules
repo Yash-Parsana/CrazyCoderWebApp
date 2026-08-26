@@ -13,20 +13,21 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // users/{uid}: { email, status, username, chatfriends, pic }
-    // PLUS a special users/userNameToId doc (Android only) holding a flat
-    // { username: uid } map used for username lookups there - the web app
-    // instead does a `where('username','==',...)` query, so the two
-    // clients use different mechanisms for the same lookup and don't
-    // populate each other's index (a pre-existing inconsistency, not
-    // introduced by these rules - a web-app signup never gets added to
-    // userNameToId, so Android users can't "add friend by username" a
-    // web-only user today).
+    //
+    // NOTE on username lookup: the Android app currently also maintains a
+    // side-index doc, users/userNameToId ({ username: uid }), and looks
+    // usernames up there instead of querying this collection. That doc is
+    // being dropped (tracked in android-web-diff.md) in favor of every
+    // client doing what the web app already does: a
+    // `where('username','==',...)` query directly against this collection,
+    // which needs no special-cased doc ID or write exception. So this rule
+    // intentionally does NOT special-case a userNameToId write anymore -
+    // deploy this only once the Android app no longer writes to that doc,
+    // or its signup flow will start failing with permission-denied.
     match /users/{uid} {
       // Read is open on purpose: SignUpForm/SignUp.kt check username
       // availability BEFORE the visitor is signed in, and both apps look
-      // up friends by username too. If you don't need email readable by
-      // everyone, consider moving username lookups to a separate
-      // "usernames" collection that only maps username -> uid.
+      // up friends by username too.
       allow read: if true;
       allow write: if request.auth != null && (
         // the owner may write anything on their own doc
@@ -37,20 +38,7 @@ service cloud.firestore {
         // if chatfriends is the one field being touched. This can't stop
         // someone from tampering with another user's friend list, but it
         // keeps a non-owner write from touching username/email/pic/status.
-        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['chatfriends']) ||
-        // the shared username index doc: any signed-in user can write it
-        // (both apps do, to register their own username). Firestore rules
-        // can't express "only add a new key whose value is your own uid,
-        // never touch existing keys" without knowing the key name up
-        // front, so this is intentionally left open for any authenticated
-        // user - the residual risk is someone overwriting another user's
-        // entry to redirect "find by username" to their own uid (not an
-        // account takeover, since it doesn't grant access to the other
-        // user's actual data). Tighten this by moving to a
-        // usernames/{username} collection with immutable-once-created
-        // rules if that residual risk matters to you - that needs an app
-        // code change on both platforms, so flagging rather than doing it.
-        uid == 'userNameToId'
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['chatfriends'])
       );
     }
 
