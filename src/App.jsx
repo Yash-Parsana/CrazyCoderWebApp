@@ -1,7 +1,8 @@
 import { Outlet } from 'react-router-dom';
 import Footer from './components/Footer';
 import Header from './components/Header';
-import { useEffect } from 'react';
+import Loader from './components/Loader';
+import { Suspense, useEffect } from 'react';
 import { onAuthChanged, getDocumentFromFireStore } from './services/firebaseService';
 import { login, logout } from './features/auth/authSlice';
 import { useDispatch } from 'react-redux';
@@ -28,7 +29,9 @@ function App() {
     if (location.pathname == '/chat') {
         return (
             <main>
-                <Outlet />
+                <Suspense fallback={<Loader />}>
+                    <Outlet />
+                </Suspense>
             </main>
         );
     } else {
@@ -36,7 +39,9 @@ function App() {
             <>
                 <Header />
                 <main>
-                    <Outlet />
+                    <Suspense fallback={<Loader />}>
+                        <Outlet />
+                    </Suspense>
                 </main>
                 <Footer />
             </>

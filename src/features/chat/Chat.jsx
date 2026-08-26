@@ -7,7 +7,7 @@ import {
     getDocumentFromFireStore,
     getMultipleDocsFromFirestore,
     isUsernameExist,
-    updateDocField,
+    addToChatfriends,
     sendMessage,
     chatListener,
 } from '../../services/firebaseService';
@@ -95,12 +95,8 @@ function Chat() {
         const user = await isUsernameExist(username);
         if (user?.uid) {
             if (!isPresent(friendList, user)) {
-                const newFriendUidList = friendList.map((ele) => ele.uid);
-                newFriendUidList.push(user.uid);
-                const theirFriendUidList = user.chatfriends ?? [];
-                theirFriendUidList.push(userData.uid);
-                await updateDocField('users', userData.uid, { chatfriends: newFriendUidList });
-                await updateDocField('users', user.uid, { chatfriends: theirFriendUidList });
+                await addToChatfriends(userData.uid, user.uid);
+                await addToChatfriends(user.uid, userData.uid);
                 user.chatfriends = null;
                 let newFriendList = [...friendList];
                 newFriendList.push(user);

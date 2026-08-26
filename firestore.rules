@@ -34,11 +34,16 @@ service cloud.firestore {
         request.auth.uid == uid ||
         // both apps' "add friend" flow writes the OTHER user's chatfriends
         // array directly (Chat.jsx addFriend / chatFragment.kt) with no
-        // backend in between - so a non-owner write is allowed, but only
-        // if chatfriends is the one field being touched. This can't stop
-        // someone from tampering with another user's friend list, but it
-        // keeps a non-owner write from touching username/email/pic/status.
-        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['chatfriends'])
+        // backend in between - so a non-owner write is allowed, but ONLY to
+        // append their own uid: nothing else may change, no existing entry
+        // may be removed, and no uid other than the caller's own may be
+        // added. hasAll(old) blocks removals; hasOnly(old + [self]) blocks
+        // adding anyone but yourself.
+        (
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['chatfriends']) &&
+          request.resource.data.chatfriends.hasAll(resource.data.chatfriends) &&
+          request.resource.data.chatfriends.hasOnly(resource.data.chatfriends.concat([request.auth.uid]))
+        )
       );
     }
 

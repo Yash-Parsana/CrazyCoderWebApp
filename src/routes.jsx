@@ -1,13 +1,15 @@
+import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
-import Home from './features/home/Home.jsx';
-import LeaderBoard from './features/leaderboard/LeaderBoard.jsx';
-import SignUpForm from './features/auth/SignUpForm.jsx';
-import SignInForm from './features/auth/SignInForm.jsx';
 import ProtectedRoute from './features/auth/ProtectedRoute.jsx';
-import Logout from './features/auth/Logout.jsx';
-import Chat from './features/chat/Chat.jsx';
-import Profile from './features/profile/Profile.jsx';
+
+const Home = lazy(() => import('./features/home/Home.jsx'));
+const LeaderBoard = lazy(() => import('./features/leaderboard/LeaderBoard.jsx'));
+const SignUpForm = lazy(() => import('./features/auth/SignUpForm.jsx'));
+const SignInForm = lazy(() => import('./features/auth/SignInForm.jsx'));
+const Logout = lazy(() => import('./features/auth/Logout.jsx'));
+const Chat = lazy(() => import('./features/chat/Chat.jsx'));
+const Profile = lazy(() => import('./features/profile/Profile.jsx'));
 
 const router = createBrowserRouter([
     {

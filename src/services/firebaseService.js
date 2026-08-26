@@ -19,6 +19,7 @@ import {
     updateDoc,
     documentId,
     onSnapshot,
+    arrayUnion,
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import app from './firebaseConfig';
@@ -120,6 +121,11 @@ const updateDocField = async (coll, docc, keyValueObj) => {
     }
 };
 
+const addToChatfriends = async (uid, friendUid) => {
+    const docRef = doc(db, 'users', uid);
+    await updateDoc(docRef, { chatfriends: arrayUnion(friendUid) });
+};
+
 const uploadImage = async (file, filename) => {
     try {
         const storageRef = ref(storage, `images/${filename}`);
@@ -163,6 +169,7 @@ export {
     getDocumentFromFireStore,
     getMultipleDocsFromFirestore,
     updateDocField,
+    addToChatfriends,
     sendMessage,
     chatListener,
     uploadImage,
